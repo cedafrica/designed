@@ -21,13 +21,14 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close mobile menu on outside click
+  // Close mobile drawer on outside click
   useEffect(() => {
     const handleClickOutside = (e: any) => {
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
         setNavbarOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -52,7 +53,7 @@ export default function Header() {
         }
       `}
     >
-      {/* Background glow only when NOT sticky (desktop only) */}
+      {/* Background glow (desktop only, not sticky) */}
       {!sticky && (
         <div className="absolute inset-0 pointer-events-none hidden lg:block">
           <div className="absolute top-0 left-20 w-60 h-60 bg-blue-300/20 blur-3xl rounded-full"></div>
@@ -77,14 +78,11 @@ export default function Header() {
             <a
               key={item.href}
               href={item.href}
-              className={`
-                text-base transition-all
-                ${
-                  sticky
-                    ? "text-black hover:text-primary"
-                    : "text-white hover:text-primary"
-                }
-              `}
+              className={`text-base transition-all ${
+                sticky
+                  ? "text-black hover:text-primary"
+                  : "text-white hover:text-primary"
+              }`}
             >
               {item.name}
             </a>
@@ -107,10 +105,10 @@ export default function Header() {
           </a>
         </div>
 
-        {/* MOBILE MENU BUTTON */}
+        {/* MOBILE MENU OPEN BUTTON */}
         <button
           onClick={() => setNavbarOpen(true)}
-          className={`lg:hidden p-2 rounded-lg border backdrop-blur-md 
+          className={`lg:hidden p-2 rounded-lg border 
             ${
               sticky
                 ? "bg-black/10 border-black/20"
@@ -122,16 +120,18 @@ export default function Header() {
         </button>
       </div>
 
-      {/* MOBILE SLIDE MENU */}
+      {/* MOBILE SLIDE DRAWER */}
       <div
         ref={mobileMenuRef}
-        className={`fixed top-0 right-0 h-full w-[75%] max-w-xs z-50 
-          bg-gradient-to-br from-[#001f3f] to-[#003b73] text-white
-          backdrop-blur-xl shadow-xl 
+        className={`
+          fixed top-0 right-0 h-full w-[75%] max-w-xs z-50
+          bg-gradient-to-br from-[#001f3f] to-[#003b73] 
+          text-white shadow-2xl
           transition-transform duration-300
           ${navbarOpen ? "translate-x-0" : "translate-x-full"}
         `}
       >
+        {/* Drawer Header */}
         <div className="p-6 flex items-center justify-between">
           <h2 className="text-lg font-bold text-white">Menu</h2>
 
@@ -143,14 +143,14 @@ export default function Header() {
           </button>
         </div>
 
+        {/* Drawer Navigation Links */}
         <nav className="flex flex-col gap-6 px-6">
           {navLinks.map((item) => (
             <a
               key={item.href}
               href={item.href}
               onClick={() => setNavbarOpen(false)}
-              className={`
-                text-lg font-medium transition 
+              className={`text-lg font-medium transition 
                 ${
                   pathname === item.href
                     ? "text-primary"
